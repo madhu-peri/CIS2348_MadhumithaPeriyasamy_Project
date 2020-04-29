@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 public class AssetManagement extends Application {
 
+    //Record class establishes the Assets' property methods that can be used to create and edit asset objects
     public class Record {
 
         public Record()
@@ -88,9 +89,9 @@ public class AssetManagement extends Application {
         }
 
     }
+    //end of Record class
 
     public TableView<Record> tableView = new TableView<>();
-
     public ObservableList<Record> dataList
             = FXCollections.observableArrayList();
 
@@ -133,6 +134,7 @@ public class AssetManagement extends Application {
         tableView.getColumns().addAll(
                 columnF1, columnF2, columnF3, columnF4, columnF5, columnF6);
 
+        //buttons for the 3 actions created here
         Button button1 = new Button("Click here to edit or delete an existing asset");
         Button button2 = new Button("Click here to add an asset");
         Button button3 = new Button("Click her to view the number of assets per category");
@@ -149,6 +151,7 @@ public class AssetManagement extends Application {
         left1.setLeft(button3);
         bottom1.setBottom(left1);
 
+        //eventhandler created to handle asset editing and deleting events
         button1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -161,12 +164,10 @@ public class AssetManagement extends Application {
                 Label label2 = new Label("\"Edit\" or \"Delete\" the asset? ");
                 Label label3 = new Label("If editing, what is the exact field name of the asset you would like to change? (leave blank if N/A) ");
                 Label label4 = new Label("If editing, what would you like the new field value to be? (leave blank if N/A) ");
-                //Label label5 = new Label("If deleting, what is the row number of the asset you would like to delete? (leave blank if N/A) ");
                 TextField text1 = new TextField();
                 TextField text2 = new TextField();
                 TextField text3 = new TextField();
                 TextField text4 = new TextField();
-                //TextField text5 = new TextField();
 
                 Button okButton = new Button("Enter!");
                 GridPane grid = new GridPane();
@@ -178,8 +179,6 @@ public class AssetManagement extends Application {
                 grid.add(text3, 2, 3);
                 grid.add(label4, 1, 4);
                 grid.add(text4, 2, 4);
-                //grid.add(label5, 1, 5);
-                //grid.add(text5, 2, 5);
                 grid.add(okButton, 5, 9);
                 dialog.getDialogPane().setContent(grid);
 
@@ -241,6 +240,7 @@ public class AssetManagement extends Application {
             }
         });
 
+        //event handler created to handle asset adding events
         button2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -314,6 +314,7 @@ public class AssetManagement extends Application {
             }
         });
 
+        //event handler created to handle asset counting
         button3.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -345,13 +346,15 @@ public class AssetManagement extends Application {
             }
         });
 
+        //adds all objects to stage and displays the table
         root.getChildren().add(vBox);
-        primaryStage.setScene(new Scene(root/*, 700, 250*/));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
         readCSV();
     }
 
+    //method that iterates through the CSV file
     private void readCSV() {
 
         String CsvFile = "assets.csv";
@@ -383,6 +386,7 @@ public class AssetManagement extends Application {
     }
 
 
+    //Asset category child classes and interfaces are defined below
     public class Computers extends Record implements MaintenanceComputers, IPConfigComp
     {
         public Computers(String idNum, String name, String type, String location, String useBy, String state)
