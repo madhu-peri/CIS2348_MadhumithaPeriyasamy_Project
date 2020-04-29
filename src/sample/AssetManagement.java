@@ -7,14 +7,16 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -22,40 +24,67 @@ public class AssetManagement extends Application {
 
     public class Record {
 
-        private SimpleStringProperty f1, f2, f3, f4, f5, f6;
-
-        public String getF1() {
-            return f1.get();
+        public Record()
+        {
         }
 
-        public String getF2() {
-            return f2.get();
+        Record(String idNumber, String assetName, String assetType, String assetLocation, String usedBy, String assetState) {
+            this.setIdNumber(idNumber);
+            this.setAssetName(assetName);
+            this.setAssetType(assetType);
+            this.setAssetLocation(assetLocation);
+            this.setUsedBy(usedBy);
+            this.setAssetState(assetState);
         }
 
-        public String getF3() {
-            return f3.get();
+        private String idNumber, assetName, assetType, assetLocation, usedBy, assetState;
+
+        public String getIdNumber() {
+            return idNumber;
         }
 
-        public String getF4() {
-            return f4.get();
+        public void setIdNumber(String idNumber) {
+            this.idNumber = idNumber;
         }
 
-        public String getF5() {
-            return f5.get();
+        public String getAssetName() {
+            return assetName;
         }
 
-        public String getF6() {
-            return f6.get();
+        public void setAssetName(String assetName) {
+            this.assetName = assetName;
         }
 
-        Record(String f1, String f2, String f3, String f4,
-               String f5, String f6) {
-            this.f1 = new SimpleStringProperty(f1);
-            this.f2 = new SimpleStringProperty(f2);
-            this.f3 = new SimpleStringProperty(f3);
-            this.f4 = new SimpleStringProperty(f4);
-            this.f5 = new SimpleStringProperty(f5);
-            this.f6 = new SimpleStringProperty(f6);
+        public String getAssetType() {
+            return assetType;
+        }
+
+        public void setAssetType(String assetType) {
+            this.assetType = assetType;
+        }
+
+        public String getAssetLocation() {
+            return assetLocation;
+        }
+
+        public void setAssetLocation(String assetLocation) {
+            this.assetLocation = assetLocation;
+        }
+
+        public String getUsedBy() {
+            return usedBy;
+        }
+
+        public void setUsedBy(String usedBy) {
+            this.usedBy = usedBy;
+        }
+
+        public String getAssetState() {
+            return assetState;
+        }
+
+        public void setAssetState(String assetState) {
+            this.assetState = assetState;
         }
 
     }
@@ -70,42 +99,254 @@ public class AssetManagement extends Application {
         primaryStage.setTitle("Table of Assets");
 
         Group root = new Group();
+        BorderPane firstB = new BorderPane();
+        BorderPane bottom = new BorderPane();
+        BorderPane left = new BorderPane();
+        BorderPane left1 = new BorderPane();
+        BorderPane bottom1 = new BorderPane();
 
         TableColumn columnF1 = new TableColumn("Column 1");
         columnF1.setCellValueFactory(
-                new PropertyValueFactory<>("f1"));
+                new PropertyValueFactory<>("idNumber"));
 
         TableColumn columnF2 = new TableColumn("Column 2");
         columnF2.setCellValueFactory(
-                new PropertyValueFactory<>("f2"));
+                new PropertyValueFactory<>("assetName"));
 
         TableColumn columnF3 = new TableColumn("Column 3");
         columnF3.setCellValueFactory(
-                new PropertyValueFactory<>("f3"));
+                new PropertyValueFactory<>("assetType"));
 
         TableColumn columnF4 = new TableColumn("Column 4");
         columnF4.setCellValueFactory(
-                new PropertyValueFactory<>("f4"));
+                new PropertyValueFactory<>("assetLocation"));
 
         TableColumn columnF5 = new TableColumn("Column 5");
         columnF5.setCellValueFactory(
-                new PropertyValueFactory<>("f5"));
+                new PropertyValueFactory<>("usedBy"));
 
         TableColumn columnF6 = new TableColumn("Column 6");
         columnF6.setCellValueFactory(
-                new PropertyValueFactory<>("f6"));
+                new PropertyValueFactory<>("assetState"));
 
         tableView.setItems(dataList);
         tableView.getColumns().addAll(
                 columnF1, columnF2, columnF3, columnF4, columnF5, columnF6);
 
+        Button button1 = new Button("Click here to edit or delete an existing asset");
+        Button button2 = new Button("Click here to add an asset");
+        Button button3 = new Button("Click her to view the number of assets per category");
+
         VBox vBox = new VBox();
-        vBox.setSpacing(10);
+        vBox.setSpacing(20);
         vBox.getChildren().add(tableView);
+        vBox.getChildren().add(firstB);
+        vBox.getChildren().add(bottom);
+        vBox.getChildren().add(bottom1);
+        firstB.setBottom(button1);
+        left.setLeft(button2);
+        bottom.setBottom(left);
+        left1.setLeft(button3);
+        bottom1.setBottom(left1);
+
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Dialog<Record> dialog = new Dialog<>();
+                dialog.setTitle("Edit/Delete Assets");
+                dialog.setHeaderText(null);
+                dialog.setResizable(true);
+
+                Label label1 = new Label("Row number of asset to edit/delete: ");
+                Label label2 = new Label("\"Edit\" or \"Delete\" the asset? ");
+                Label label3 = new Label("If editing, what is the exact field name of the asset you would like to change? (leave blank if N/A) ");
+                Label label4 = new Label("If editing, what would you like the new field value to be? (leave blank if N/A) ");
+                //Label label5 = new Label("If deleting, what is the row number of the asset you would like to delete? (leave blank if N/A) ");
+                TextField text1 = new TextField();
+                TextField text2 = new TextField();
+                TextField text3 = new TextField();
+                TextField text4 = new TextField();
+                //TextField text5 = new TextField();
+
+                Button okButton = new Button("Enter!");
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                grid.add(label2, 1, 2);
+                grid.add(text2, 2, 2);
+                grid.add(label3, 1, 3);
+                grid.add(text3, 2, 3);
+                grid.add(label4, 1, 4);
+                grid.add(text4, 2, 4);
+                //grid.add(label5, 1, 5);
+                //grid.add(text5, 2, 5);
+                grid.add(okButton, 5, 9);
+                dialog.getDialogPane().setContent(grid);
+
+                ButtonType buttonTypeOk = new ButtonType("Click when done entering information to see table of updated records", ButtonBar.ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                dialog.show();
+
+                okButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        if(text2.getText().equals("Edit"))
+                        {
+                            if(text3.getText().equals("AssetIDNumber"))
+                            {
+                                int index = (Integer.parseInt(text1.getText()));
+                                dataList.get(index).setIdNumber(text4.getText());
+                                readCSV();
+                            }
+                            if(text3.getText().equals("AssetName"))
+                            {
+                                int index = (Integer.parseInt(text1.getText()));
+                                dataList.get(index).setAssetName(text4.getText());
+                                readCSV();
+                            }
+                            if(text3.getText().equals("AssetType"))
+                            {
+                                int index = (Integer.parseInt(text1.getText()));
+                                dataList.get(index).setAssetType(text4.getText());
+                                readCSV();
+                            }
+                            if(text3.getText().equals("AssetLocation"))
+                            {
+                                int index = (Integer.parseInt(text1.getText()));
+                                dataList.get(index).setAssetLocation(text4.getText());
+                                readCSV();
+                            }
+                            if(text3.getText().equals("UsedBy"))
+                            {
+                                int index = (Integer.parseInt(text1.getText()));
+                                dataList.get(index).setUsedBy(text4.getText());
+                                readCSV();
+                            }
+                            if(text3.getText().equals("AssetState"))
+                            {
+                                int index = (Integer.parseInt(text1.getText()));
+                                dataList.get(index).setAssetState(text4.getText());
+                                readCSV();
+                            }
+                        }
+                        else
+                        {
+                            int index = (Integer.parseInt(text1.getText()));
+                            dataList.remove(index);
+                            readCSV();
+                        }
+                    }
+                });
+
+            }
+        });
+
+        button2.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                Dialog<Record> dialog = new Dialog<>();
+                dialog.setTitle("Create an Asset");
+                dialog.setHeaderText(null);
+                dialog.setResizable(true);
+
+                Label label1 = new Label("Do you want to add a \"Computer\", a \"Printer\", or an \"Audio/Video\" asset? ");
+                Label label2 = new Label("Enter the AssetIDNumber: ");
+                Label label3 = new Label("Enter the AssetName: ");
+                Label label4 = new Label("Enter the AssetType: ");
+                Label label5 = new Label("Enter the AssetLocation");
+                Label label6 = new Label("Enter the UsedBy information: ");
+                Label label7 = new Label("Enter the AssetState: ");
+                TextField text1 = new TextField();
+                TextField text2 = new TextField();
+                TextField text3 = new TextField();
+                TextField text4 = new TextField();
+                TextField text5 = new TextField();
+                TextField text6 = new TextField();
+                TextField text7 = new TextField();
+
+                Button okButton = new Button("Enter!");
+                GridPane grid = new GridPane();
+                grid.add(label1, 1, 1);
+                grid.add(text1, 2, 1);
+                grid.add(label2, 1, 2);
+                grid.add(text2, 2, 2);
+                grid.add(label3, 1, 3);
+                grid.add(text3, 2, 3);
+                grid.add(label4, 1, 4);
+                grid.add(text4, 2, 4);
+                grid.add(label5, 1, 5);
+                grid.add(text5, 2, 5);
+                grid.add(label6, 1, 6);
+                grid.add(text6, 2, 6);
+                grid.add(label7, 1, 7);
+                grid.add(text7, 2, 7);
+                grid.add(okButton, 7, 13);
+                dialog.getDialogPane().setContent(grid);
+
+                ButtonType buttonTypeOk = new ButtonType("Click when done entering information to see table of updated records", ButtonBar.ButtonData.OK_DONE);
+                dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+                dialog.show();
+
+                okButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        if(text1.getText().equals("Computer")||text1.getText().equals("computer"))
+                        {
+                            Computers comp = new Computers(text2.getText(), text3.getText(), text4.getText(),text5.getText(),text6.getText(),text7.getText());
+                            dataList.add(1, comp);
+                            readCSV();
+                        }
+                        else if(text1.getText().equals("Printer")||text1.getText().equals("printer"))
+                        {
+                            Printers print = new Printers(text2.getText(), text3.getText(), text4.getText(),text5.getText(),text6.getText(),text7.getText());
+                            dataList.add(1, print);
+                            readCSV();
+                        }
+                        else
+                        {
+                            AudioVideo av = new AudioVideo(text2.getText(), text3.getText(), text4.getText(),text5.getText(),text6.getText(),text7.getText());
+                            dataList.add(1, av);
+                            readCSV();
+                        }
+                    }
+                });
+            }
+        });
+
+        button3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                int countc = 0;
+                int countp = 0;
+                int countav = 0;
+
+                for(int i = 1; i < dataList.size(); i++)
+                {
+                    if(dataList.get(i).assetType.equals("Computer")||dataList.get(i).assetType.equals("computer")||dataList.get(i).assetType.equals("Computers")||dataList.get(i).assetType.equals("computers"))
+                    {
+                        countc++;
+                    }
+                    else if(dataList.get(i).assetType.equals("Printer")||dataList.get(i).assetType.equals("printer")||dataList.get(i).assetType.equals("Printers")||dataList.get(i).assetType.equals("printers"))
+                    {
+                        countp++;
+                    }
+                    else
+                    {
+                        countav++;
+                    }
+                }
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Number of Assets per Category");
+                alert.setHeaderText(null);
+                alert.setContentText("Number of Computers: " + countc + "\nNumber of Printers: " + countp + "\nNumber of Audio/Video: " + countav);
+                alert.showAndWait();
+            }
+        });
 
         root.getChildren().add(vBox);
-
-        primaryStage.setScene(new Scene(root, 700, 250));
+        primaryStage.setScene(new Scene(root/*, 700, 250*/));
         primaryStage.show();
 
         readCSV();
@@ -141,9 +382,106 @@ public class AssetManagement extends Application {
 
     }
 
+
+    public class Computers extends Record implements MaintenanceComputers, IPConfigComp
+    {
+        public Computers(String idNum, String name, String type, String location, String useBy, String state)
+        {
+            setIdNumber(idNum);
+            setAssetName(name);
+            setAssetType(type);
+            setAssetLocation(location);
+            setUsedBy(useBy);
+            setAssetState(state);
+        }
+        public void computerUpdates()
+        {
+            System.out.println("Provides security and software updates to computers");
+        }
+
+        @Override
+        public void getIPcomp() {
+            System.out.println("Configures computers' and laptops' IP addresses");
+        }
+    }
+
+    public class Printers extends Record implements MaintenancePrinters, IPConfigPrint
+    {
+        public Printers(String idNum, String name, String type, String location, String useBy, String state)
+        {
+            setIdNumber(idNum);
+            setAssetName(name);
+            setAssetType(type);
+            setAssetLocation(location);
+            setUsedBy(useBy);
+            setAssetState(state);
+        }
+        @Override
+        public void printerUpdates() {
+
+            System.out.println("Updates driver software and cleans the cartridge when needed");
+        }
+
+        @Override
+        public void getIPPrint() {
+            System.out.println("Configures IP addresses of printers");
+        }
+    }
+
+    public class AudioVideo extends Record implements MaintenanceAV, IPConfigAV
+    {
+        public AudioVideo(String idNum, String name, String type, String location, String useBy, String state)
+        {
+            setIdNumber(idNum);
+            setAssetName(name);
+            setAssetType(type);
+            setAssetLocation(location);
+            setUsedBy(useBy);
+            setAssetState(state);
+        }
+        public void avUpdates()
+        {
+            System.out.println("Cleans the projector window and replaces projector Lamp");
+        }
+
+        @Override
+        public void getIPav() {
+            System.out.println("Configures IP addresses of audio/video equipment (projectors)");
+        }
+    }
+
+    interface MaintenanceComputers
+    {
+        public void computerUpdates();
+    }
+
+    interface MaintenancePrinters
+    {
+        public void printerUpdates();
+    }
+
+    interface MaintenanceAV
+    {
+        public void avUpdates();
+    }
+
+    interface IPConfigComp
+    {
+        public void getIPcomp();
+    }
+
+    interface IPConfigPrint
+    {
+        public void getIPPrint();
+    }
+
+    interface IPConfigAV
+    {
+        public void getIPav();
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
-
 }
 
